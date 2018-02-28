@@ -1,9 +1,8 @@
 FROM golang
 
-WORKDIR /go/src/app
-COPY api .
+WORKDIR /opt/out
+COPY out .
+COPY wait-for-it.sh .
+RUN chmod +x wait-for-it.sh
 
-RUN go get -d -v
-RUN go install -v
-
-CMD ["app"]
+CMD ["./wait-for-it.sh", "db:5432", "--", "./run.sh"]
