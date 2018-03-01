@@ -1,0 +1,1 @@
+DROP TABLE k_account;

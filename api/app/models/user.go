@@ -1,26 +1,17 @@
 package models
 
 import (
-	"github.com/jinzhu/gorm"
-	"golang.org/x/crypto/bcrypt"
+	_ "github.com/jinzhu/gorm"
 )
 
 // User model
 type User struct {
-	gorm.Model
+	Id             string
 	Name           string `gorm:"size:255"`
 	Email          string `gorm:"type:varchar(100);unique_index"`
-	HashedPassword []byte `gorm:"column:password"`
-	Active         bool
-	FileName       string `gorm:"size:255"`
-}
-
-// SetNewPassword set a new hashsed password to user
-func (user *User) SetNewPassword(passwordString string) {
-	bcryptPassword, _ := bcrypt.GenerateFromPassword([]byte(passwordString), bcrypt.DefaultCost)
-	user.HashedPassword = bcryptPassword
+	Status         string
 }
 
 func (User) TableName() string {
-	return "md_account"
+	return "k_account"
 }

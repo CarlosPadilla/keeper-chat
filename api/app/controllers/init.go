@@ -1,5 +1,5 @@
 package controllers
-
+/*
 import (
 	"github.com/revel/revel"
 	gorm "github.com/revel/modules/orm/gorm/app"
@@ -9,5 +9,6 @@ import (
 )
 
 func init() {
-//	revel.OnAppStart(initializeDB)
+	revel.OnAppStart(initializeDB)
 }
+*/
