@@ -1,2 +1,2 @@
-# revelation
-Revel based keeper
+# Keeper chat
+keeper chat module

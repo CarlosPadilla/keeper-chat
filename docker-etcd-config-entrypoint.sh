@@ -29,3 +29,17 @@ exec etcdctl put /config/go_oauth2_server.json '{
   },
   "IsDevelopment": true
 }'
+
+exec etcdctl put /config/go_api_server.json '{
+  "Database": {
+    "Type": "postgres",
+    "Host": "db",
+    "Port": 5432,
+    "User": "keeper",
+    "Password": "",
+    "DatabaseName": "keeper",
+    "MaxIdleConns": 5,
+    "MaxOpenConns": 5
+  },
+  "IsDevelopment": true
+}'

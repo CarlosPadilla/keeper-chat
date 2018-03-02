@@ -2,8 +2,11 @@ FROM golang
 
 ADD out .
 
-COPY wait-for-it.sh .
-RUN chmod +x wait-for-it.sh
+RUN apt-get update -q
+RUN apt-get install postgresql-client -q -y
+
+COPY wait-for-postgres.sh .
+RUN chmod +x wait-for-postgres.sh
 
 COPY api-entrypoint.sh .
 RUN chmod +x api-entrypoint.sh
@@ -13,4 +16,4 @@ RUN go build -tags 'postgres' -o /usr/local/bin/migrate github.com/mattes/migrat
 
 COPY fixtures/* fixtures/
 
-CMD ["./wait-for-it.sh", "db:5432", "--", "./api-entrypoint.sh"]
+CMD ["./wait-for-postgres.sh", "./api-entrypoint.sh"]
