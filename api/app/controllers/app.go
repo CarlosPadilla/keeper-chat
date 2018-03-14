@@ -11,7 +11,7 @@ type App struct {
 }
 
 func (c App) Index() revel.Result {
-	var users = []models.User{}
+	var users = []models.Account{}
 	c.Txn.Find(&users)
 	return c.RenderJSON(users)
 }
