@@ -12,7 +12,7 @@ type User struct {
 }
 
 func (c User) Index() revel.Result {
-	var users = []models.Account{}
+	var users []models.Account
 	c.Txn.Find(&users)
 	return c.RenderJSON(users)
 }
@@ -26,7 +26,7 @@ func (c User) Create(account *models.Account) revel.Result {
 	c.Validation.Email(account.Email)
 
 	if c.Validation.HasErrors() {
-		c.Response.SetStatus(http.StatusBadRequest)
+		c.Response.Status = http.StatusBadRequest
 		return c.RenderJSON(c.Validation.Errors)
 	}
 
