@@ -1,0 +1,7 @@
+# vim:set ft=dockerfile:
+FROM postgres:latest
+MAINTAINER Marcelo Falero
+
+# Custom initialization scripts
+COPY ./create_db.sh     /docker-entrypoint-initdb.d/20-create_db.sh
+

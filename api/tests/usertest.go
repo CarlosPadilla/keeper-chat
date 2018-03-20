@@ -8,26 +8,21 @@ import (
 	_ "fmt"
 	"github.com/Zeloid/keeper-chat/api/app/models"
 	"regexp"
-
 	"fmt"
+	"github.com/Zeloid/keeper-chat/api/app/components"
 )
 
 type UserTest struct {
 	testing.TestSuite
 }
 
-type ErrorResponse struct {
-	Key string
-	Message string
-}
-
 /**
  * Test an array of errors for the presence of a certain error
  */
-func (t *UserTest) AssertJSONError (errors []ErrorResponse, key string, message string) {
+func (t *UserTest) AssertValidationError(response components.ValidationErrorResponse, key string, message string) {
 	found := 0
-	for i:=0; i < len(errors); i++ {
-		if errors[i].Key == key && errors[i].Message == message {
+	for i:=0; i < len(response.Errors); i++ {
+		if response.Errors[i].Key == key && response.Errors[i].Message == message {
 			found++
 		}
 	}
@@ -45,7 +40,7 @@ func (t *UserTest) AssertUUID (uuid string) {
 }
 
 func (t *UserTest) AssertEntityUUID (uuid string, entityName string, tableId int8) {
-	r := fmt.Sprintf("00000000-0000-%04x-[0-9a-f]{4}-[0-9a-f]{12}", tableId)
+	r := fmt.Sprintf("00000000-%04x-0000-[0-9a-f]{4}-[0-9a-f]{12}", tableId)
 	match, _ := regexp.MatchString(r, uuid)
 	t.Assertf(match, "Invalid %v UUID: %v", entityName, uuid)
 }
@@ -75,7 +70,7 @@ func (t *UserTest) TestCorrectPost() {
 }
 
 func (t *UserTest) TestEmptyPost() {
-	var responseJson []ErrorResponse
+	var responseJson components.ValidationErrorResponse
 	const expectedErrorCount = 4
 
 	requestBody := strings.NewReader(`{}`)
@@ -88,17 +83,17 @@ func (t *UserTest) TestEmptyPost() {
 
 	t.Assertf(err == nil, "Invalid Json error response: %q", err)
 
-	t.Assertf(len(responseJson) == expectedErrorCount, "Invalid number errors reported(%d), %d expected", len(responseJson), expectedErrorCount)
+	t.Assertf(len(responseJson.Errors) == expectedErrorCount, "Invalid number errors reported(%d), %d expected", len(responseJson.Errors), expectedErrorCount)
 	//fmt.Printf("Response of testing server is %q", t.ResponseBody)
 
-	t.AssertJSONError(responseJson, "account.Name", "Required")
-	t.AssertJSONError(responseJson, "account.Name", "Minimum size is 4\n")
-	t.AssertJSONError(responseJson, "account.Email", "Required")
-	t.AssertJSONError(responseJson, "account.Email", "Must be a valid email address\n")
+	t.AssertValidationError(responseJson, "account.Name", "Required")
+	t.AssertValidationError(responseJson, "account.Name", "Minimum size is 4\n")
+	t.AssertValidationError(responseJson, "account.Email", "Required")
+	t.AssertValidationError(responseJson, "account.Email", "Must be a valid email address\n")
 }
 
 func (t *UserTest) TestInvalidEmailPost() {
-	var responseJson []ErrorResponse
+	var responseJson components.ValidationErrorResponse
 	const expectedErrorCount = 1
 
 	requestBody := strings.NewReader(`{"name": "Peteco", "email": "peteco@mailcom"}`)
@@ -111,10 +106,10 @@ func (t *UserTest) TestInvalidEmailPost() {
 
 	t.Assertf(err == nil, "Invalid Json error response: %q", err)
 
-	t.Assertf(len(responseJson) == expectedErrorCount, "Invalid number errors reported(%d), %d expected", len(responseJson), expectedErrorCount)
-	//fmt.Printf("Response of testing server is %q", t.ResponseBody)
+	t.Assertf(len(responseJson.Errors) == expectedErrorCount, "Invalid number errors reported(%d), %d expected", len(responseJson.Errors), expectedErrorCount)
+	fmt.Printf("Response of testing server is %q", t.ResponseBody)
 
-	t.AssertJSONError(responseJson, "account.Email", "Must be a valid email address\n")
+	t.AssertValidationError(responseJson, "account.Email", "Must be a valid email address\n")
 }
 
 func (t *UserTest) After() {

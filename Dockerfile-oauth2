@@ -1,0 +1,4 @@
+# vim:set ft=dockerfile:
+FROM go-oauth2-server:latest
+MAINTAINER Marcelo Falero
+

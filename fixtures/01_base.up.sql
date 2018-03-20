@@ -1,9 +1,7 @@
-CREATE TYPE t_account_status AS ENUM ('ENABLED', 'DISABLED', 'PENDING', 'PASSWORD_CHANGE');
-
 CREATE OR REPLACE FUNCTION getSeqUUID(tableId INT, seqName VARCHAR(100))
   RETURNS UUID AS $$
 BEGIN
-  RETURN concat(lpad(TO_HEX(tableId), 16, '0'), lpad(TO_HEX(nextval(seqName::regclass)),16, '0'))::UUID;
+  RETURN concat('00000000', lpad(TO_HEX(tableId), 4, '0'), '00000000', lpad(TO_HEX(nextval(seqName::regclass)),12, '0'))::UUID;
 END;
 $$ language 'plpgsql';
 

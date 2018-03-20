@@ -1,6 +1,6 @@
 FROM golang
 
-ADD out .
+COPY out/ ./
 
 RUN apt-get update -q
 RUN apt-get install postgresql-client -q -y
